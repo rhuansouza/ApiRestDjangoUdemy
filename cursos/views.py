@@ -3,7 +3,7 @@ from rest_framework import generics
 from rest_framework.generics import get_object_or_404
 
 from rest_framework import viewsets
-from rest_framework.decorators import action
+from rest_framework.decorators import action, api_view
 from rest_framework.response import Response
 from rest_framework import mixins
 
@@ -18,6 +18,41 @@ API V2
 class CursoViewSet(viewsets.ModelViewSet):
     queryset = Curso.objects.all()
     serializer_class = CursoSerializer
+
+    @api_view(['GET'])
+    def listarmultiplos(request):
+        curso = Curso.objects.all()
+        avaliacao = Avaliacao.objects.all()
+        print('Entrou aqui')
+        serializerCurso = CursoSerializer(curso, many=True)
+        serializerAvaliacao = AvaliacaoSerializer(avaliacao, many=True)
+        resultModel = serializerCurso.data + serializerAvaliacao.data
+        #print(serializerCurso.data[0])
+        #print(serializerCurso.data[0]['titulo'])
+        #serializerCurso.data[0]['titulo'] = 'teste'
+        #print(serializerCurso.data[0].get('titulo'))
+        listaSaida = [
+            
+        ]
+        novasaida = {
+            
+        }            
+        
+        for item in serializerCurso.data:
+            print('entrou',item.get('titulo'))
+            novasaida = item.get('titulo')
+            print('dicionario ',novasaida)
+            listaSaida.append(novasaida)
+            
+        
+        print(novasaida)
+        saida = {
+            'curso' : listaSaida,
+            'avaliacoes': serializerCurso.data[0].get('titulo')
+        }
+        return Response(saida)
+        
+
 
     @action(detail=True, methods=['get'])
     def avaliacoes(self, request, pk=None):
